@@ -10,6 +10,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
 
+@RegisterBeanMapper(UserModel.class)
 public interface UserDao {
 
     @SqlQuery("""
@@ -30,7 +31,6 @@ public interface UserDao {
                 VALUES (:name, :email)
                 RETURNING user_id, name, email
             """)
-    @RegisterBeanMapper(UserModel.class)
     UserModel createUser(
             @Bind("name") String name,
             @Bind("email") String email);
@@ -41,7 +41,6 @@ public interface UserDao {
                 WHERE user_id = :id
                 RETURNING user_id, name, email
             """)
-    @RegisterBeanMapper(UserModel.class)
     UserModel updateUser(
             @Bind("id") UUID id,
             @Bind("name") String name,
@@ -51,6 +50,5 @@ public interface UserDao {
                 DELETE FROM users
                 WHERE user_id = :id
             """)
-    void deleteUser(@Bind("id") UUID id);
-
+    boolean deleteUser(@Bind("id") UUID id);
 }

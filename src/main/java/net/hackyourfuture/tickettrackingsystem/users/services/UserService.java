@@ -33,4 +33,12 @@ public class UserService {
         return userDao.createUser(name, email);
     }
 
+    public UserModel updateUser(UUID id, String name, String email) {
+        return userDao.updateUser(id, name, email);
+    }
+
+    public boolean deleteUser(UUID id) {
+        return userDao.deleteUser(id);
+    }
+
 }
