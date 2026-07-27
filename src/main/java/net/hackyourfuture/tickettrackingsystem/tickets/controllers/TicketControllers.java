@@ -1,19 +1,25 @@
 package net.hackyourfuture.tickettrackingsystem.tickets.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketCreateRequest;
+import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketUpdateRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 import net.hackyourfuture.tickettrackingsystem.tickets.services.TicketServices;
+import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
 
 @RestController
 @RequestMapping("/v1/api/tickets")
@@ -33,10 +39,46 @@ public class TicketControllers {
     @GetMapping("/{id}")
     public ResponseEntity<TicketModel> getTicketById(@PathVariable UUID id) {
         TicketModel ticket = ticketService.getTicketById(id);
+        List<UserModel> assignedUsers = ticketService.getAssignees(id);
+
         if (ticket != null) {
+            ticket.setAssignees(assignedUsers);
             return ResponseEntity.ok(ticket);
         } else {
             return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TicketModel> updateTicket(@PathVariable UUID id,
+            @Valid @RequestBody TicketUpdateRequest ticket) {
+        TicketModel updatedTicket = ticketService.updateTicket(id, ticket);
+        if (updatedTicket != null) {
+            return ResponseEntity.ok(updatedTicket);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{id}/assign/{userId}")
+    public ResponseEntity<String> assignTicket(@PathVariable UUID id, @PathVariable UUID userId) {
+        try {
+            ticketService.assignTicket(id, userId);
+            return ResponseEntity.ok("Ticket assigned successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+    }
+
+    @PatchMapping("/{id}/unassign/{userId}")
+    public ResponseEntity<String> unassignTicket(@PathVariable UUID id, @PathVariable UUID userId) {
+        try {
+            ticketService.unassignTicket(id, userId);
+            return ResponseEntity.ok("Ticket unassigned successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

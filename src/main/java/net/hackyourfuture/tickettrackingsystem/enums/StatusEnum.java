@@ -1,9 +1,9 @@
 package net.hackyourfuture.tickettrackingsystem.enums;
 
 public enum StatusEnum {
-    OPEN("Open"),
-    IN_PROGRESS("In Progress"),
-    CLOSED("Closed");
+    OPEN("open"),
+    IN_PROGRESS("in_progress"),
+    CLOSED("closed");
 
     private final String status;
 

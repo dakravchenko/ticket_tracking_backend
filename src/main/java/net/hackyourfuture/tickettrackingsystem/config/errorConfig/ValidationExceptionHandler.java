@@ -34,9 +34,16 @@ public class ValidationExceptionHandler {
                     .body(Map.of("email", "A user with this email already exists"));
         }
 
+        if (ex.getMessage() != null && ex.getMessage().contains("ticket_assignment_pkey")) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("User", "User is already assigned to this ticket"));
+        }
+
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(Map.of("error", "Database constraint violation"));
+                .body(Map.of(
+                        "error", ex.getMessage()));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import net.hackyourfuture.tickettrackingsystem.projects.dao.ProjectDao;
+import net.hackyourfuture.tickettrackingsystem.tickets.dao.TicketAssignmentDao;
 import net.hackyourfuture.tickettrackingsystem.tickets.dao.TicketDao;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
 
@@ -34,5 +35,10 @@ public class JdbiConfig {
     @Bean
     public TicketDao ticketDao(Jdbi jdbi) {
         return jdbi.onDemand(TicketDao.class);
+    }
+
+    @Bean
+    public TicketAssignmentDao ticketAssignmentDao(Jdbi jdbi) {
+        return jdbi.onDemand(TicketAssignmentDao.class);
     }
 }

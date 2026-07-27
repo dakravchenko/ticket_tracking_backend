@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import net.hackyourfuture.tickettrackingsystem.enums.StatusEnum;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 
 @RegisterBeanMapper(TicketModel.class)
@@ -28,10 +28,21 @@ public interface TicketDao {
 
     @SqlQuery("""
                 UPDATE tickets
-                SET title = :title, description = :description, project_id = :projectId, status = :status
+                SET title = :title, description = :description, project_id = :projectId, status = CAST(:status AS status), updated_at = NOW()
                 WHERE ticket_id = :id
                 RETURNING *
             """)
-    TicketModel updateTicket(@Bind("id") UUID id, @Bind("title") String title, @Bind("description") String description,
-            @Bind("projectId") UUID projectId, @Bind("status") StatusEnum status);
+    TicketModel updateTicket(@Bind("id") UUID id, @Bind("title") String title,
+            @Bind("description") String description,
+            @Bind("projectId") UUID projectId, @Bind("status") String status);
+
+    @SqlUpdate("""
+            UPDATE tickets
+            SET updated_at = NOW()
+            WHERE ticket_id = :id
+
+                  """)
+
+    void updateTicketTimestamp(@Bind("id") UUID id);
+
 }
