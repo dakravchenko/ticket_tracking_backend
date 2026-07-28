@@ -1,6 +1,7 @@
 package net.hackyourfuture.tickettrackingsystem.config.errorConfig;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -10,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ValidationExceptionHandler {
@@ -51,5 +53,18 @@ public class ValidationExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+
+        if (ex.getRequiredType() == UUID.class) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "error", ex.getName() + " must be a valid UUID"));
+        }
+
+        return ResponseEntity.badRequest()
+                .body(Map.of("error", "Invalid request parameter"));
     }
 }

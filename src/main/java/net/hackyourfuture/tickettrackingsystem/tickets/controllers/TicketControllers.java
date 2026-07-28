@@ -62,23 +62,19 @@ public class TicketControllers {
     }
 
     @PatchMapping("/{id}/assign/{userId}")
-    public ResponseEntity<String> assignTicket(@PathVariable UUID id, @PathVariable UUID userId) {
-        try {
-            ticketService.assignTicket(id, userId);
-            return ResponseEntity.ok("Ticket assigned successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<String> assignTicket(
+            @PathVariable UUID id,
+            @PathVariable UUID userId) {
 
+        ticketService.assignTicket(id, userId);
+        return ResponseEntity.ok("Ticket assigned successfully.");
     }
 
     @PatchMapping("/{id}/unassign/{userId}")
     public ResponseEntity<String> unassignTicket(@PathVariable UUID id, @PathVariable UUID userId) {
-        try {
-            ticketService.unassignTicket(id, userId);
-            return ResponseEntity.ok("Ticket unassigned successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+
+        ticketService.unassignTicket(id, userId);
+        return ResponseEntity.ok("Ticket unassigned successfully.");
+
     }
 }
