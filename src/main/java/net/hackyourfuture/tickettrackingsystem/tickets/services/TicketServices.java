@@ -3,11 +3,9 @@ package net.hackyourfuture.tickettrackingsystem.tickets.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import net.hackyourfuture.tickettrackingsystem.config.errorConfig.DuplicateAssignmentException;
 import net.hackyourfuture.tickettrackingsystem.config.errorConfig.ResourceNotFoundException;
 import net.hackyourfuture.tickettrackingsystem.enums.StatusEnum;
 import net.hackyourfuture.tickettrackingsystem.projects.dao.ProjectDao;
@@ -15,6 +13,7 @@ import net.hackyourfuture.tickettrackingsystem.projects.model.ProjectModel;
 import net.hackyourfuture.tickettrackingsystem.tickets.dao.TicketAssignmentDao;
 import net.hackyourfuture.tickettrackingsystem.tickets.dao.TicketDao;
 import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketCreateRequest;
+import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketSearchRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketUpdateRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
@@ -99,6 +98,23 @@ public class TicketServices {
         checkTicketExists(ticketId);
 
         return ticketAssignmentDao.getAssignees(ticketId);
+    }
+
+    public List<TicketModel> searchTickets(TicketSearchRequest request) {
+
+        String text = null;
+
+        if (request.text() != null && !request.text().isBlank()) {
+            text = "%" + request.text().toLowerCase() + "%";
+        }
+
+        String status = null;
+
+        if (request.status() != null) {
+            status = request.status().name().toLowerCase();
+        }
+
+        return ticketDao.searchTickets(text, status);
     }
 
 }

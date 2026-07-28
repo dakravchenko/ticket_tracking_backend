@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import net.hackyourfuture.tickettrackingsystem.projects.dto.ProjectCreateRequest;
 import net.hackyourfuture.tickettrackingsystem.projects.model.ProjectModel;
+import net.hackyourfuture.tickettrackingsystem.projects.response.ProjectSummaryResponse;
 import net.hackyourfuture.tickettrackingsystem.projects.services.ProjectService;
 
 @RestController
@@ -36,6 +37,12 @@ public class ProjectController {
     public ResponseEntity<ProjectModel> createProject(@Valid @RequestBody ProjectCreateRequest projectRequest) {
         ProjectModel project = projectService.createProject(projectRequest);
         return ResponseEntity.ok(project);
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<ProjectSummaryResponse>> getProjectSummary() {
+        List<ProjectSummaryResponse> summaries = projectService.getProjectSummary();
+        return ResponseEntity.ok(summaries);
     }
 
     @GetMapping("/{id}")

@@ -1,5 +1,6 @@
 package net.hackyourfuture.tickettrackingsystem.tickets.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -44,5 +45,21 @@ public interface TicketDao {
                   """)
 
     void updateTicketTimestamp(@Bind("id") UUID id);
+
+    @SqlQuery("""
+            SELECT *
+            FROM tickets
+            WHERE
+                (:text IS NULL
+                    OR LOWER(title) LIKE :text
+                    OR LOWER(description) LIKE :text)
+            AND
+                (:status IS NULL
+                    OR status = CAST(:status AS status))
+            ORDER BY created_at DESC
+            """)
+    List<TicketModel> searchTickets(
+            @Bind("text") String text,
+            @Bind("status") String status);
 
 }
