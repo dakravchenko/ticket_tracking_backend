@@ -35,11 +35,16 @@ public class EmailService {
                         return;
                 }
 
-                resendClient.sendEmail(
-                                new EmailRequest(
-                                                emails,
-                                                "Ticket Updated: " + ticket.getTitle(),
-                                                templateService.ticketUpdated(ticket)));
+                System.out.println(emails);
+
+                for (String email : emails) {
+                        resendClient.sendEmail(
+                                        new EmailRequest(
+                                                        email,
+                                                        "Ticket Updated: " + ticket.getTitle(),
+                                                        templateService.ticketUpdated(ticket)));
+                }
+
         }
 
         public void sendAssigned(
@@ -48,7 +53,7 @@ public class EmailService {
 
                 resendClient.sendEmail(
                                 new EmailRequest(
-                                                List.of(user.getEmail()),
+                                                user.getEmail(),
                                                 "Ticket Assigned",
                                                 templateService.assigned(ticket)));
         }
@@ -59,7 +64,7 @@ public class EmailService {
 
                 resendClient.sendEmail(
                                 new EmailRequest(
-                                                List.of(user.getEmail()),
+                                                user.getEmail(),
                                                 "Ticket Unassigned",
                                                 templateService.unassigned(ticket)));
         }
