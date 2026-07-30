@@ -75,6 +75,7 @@ public class TicketControllers {
     public ResponseEntity<TicketModel> updateTicket(@PathVariable UUID id,
             @Valid @RequestBody TicketUpdateRequest ticket) {
         TicketModel updatedTicket = ticketService.updateTicket(id, ticket);
+
         if (updatedTicket != null) {
             return ResponseEntity.ok(updatedTicket);
         } else {

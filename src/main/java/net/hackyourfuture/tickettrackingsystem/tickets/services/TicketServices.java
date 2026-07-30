@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import net.hackyourfuture.tickettrackingsystem.config.errorConfig.ResourceNotFoundException;
+import net.hackyourfuture.tickettrackingsystem.email.services.EmailService;
 import net.hackyourfuture.tickettrackingsystem.enums.StatusEnum;
 import net.hackyourfuture.tickettrackingsystem.projects.dao.ProjectDao;
 import net.hackyourfuture.tickettrackingsystem.projects.model.ProjectModel;
@@ -25,13 +26,15 @@ public class TicketServices {
     private final ProjectDao projectDao;
     private final TicketAssignmentDao ticketAssignmentDao;
     private final UserDao userDao;
+    private final EmailService emailService;
 
     public TicketServices(TicketDao ticketDao, ProjectDao projectDao, TicketAssignmentDao ticketAssignmentDao,
-            UserDao userDao) {
+            UserDao userDao, EmailService emailService) {
         this.ticketDao = ticketDao;
         this.projectDao = projectDao;
         this.ticketAssignmentDao = ticketAssignmentDao;
         this.userDao = userDao;
+        this.emailService = emailService;
     }
 
     public TicketModel getTicketById(UUID id) {
@@ -58,6 +61,7 @@ public class TicketServices {
         return ticketDao.createTicket(request.title(), request.description(), request.projectId());
     }
 
+    @Transactional
     public TicketModel updateTicket(UUID id, TicketUpdateRequest request) {
         checkTicketExists(id);
 
@@ -65,8 +69,18 @@ public class TicketServices {
 
         StatusEnum status = StatusEnum.valueOf(request.status().toUpperCase());
 
-        return ticketDao.updateTicket(id, request.title(), request.description(), request.projectId(),
-                status.getStatus());
+        TicketModel updatedTicket = ticketDao.updateTicket(id, request.title(), request.description(),
+                request.projectId(), status.getStatus());
+
+        List<UserModel> assignees = getAssignees(id);
+
+        try {
+            emailService.sendTicketUpdated(updatedTicket, assignees);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
+        }
+
+        return updatedTicket;
     }
 
     private void validateAssignment(UUID ticketId, UUID userId) {
@@ -84,6 +98,16 @@ public class TicketServices {
         ticketAssignmentDao.assignUser(ticketId, userId);
         ticketDao.updateTicketTimestamp(ticketId);
 
+        TicketModel ticket = ticketDao.getTicketById(ticketId);
+
+        UserModel user = userDao.findById(userId);
+
+        try {
+            emailService.sendAssigned(ticket, user);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
+        }
+
     }
 
     @Transactional
@@ -92,6 +116,16 @@ public class TicketServices {
 
         ticketAssignmentDao.unassignUser(ticketId, userId);
         ticketDao.updateTicketTimestamp(ticketId);
+
+        TicketModel ticket = ticketDao.getTicketById(ticketId);
+
+        UserModel user = userDao.findById(userId);
+
+        try {
+            emailService.sendUnassigned(ticket, user);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
+        }
     }
 
     public List<UserModel> getAssignees(UUID ticketId) {
