@@ -20,6 +20,9 @@ import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
 import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 @Service
 public class TicketServices {
     private final TicketDao ticketDao;
@@ -36,6 +39,8 @@ public class TicketServices {
         this.userDao = userDao;
         this.emailService = emailService;
     }
+
+    private static final Logger log = LoggerFactory.getLogger(TicketServices.class);
 
     public TicketModel getTicketById(UUID id) {
         return ticketDao.getTicketById(id);
@@ -77,7 +82,7 @@ public class TicketServices {
         try {
             emailService.sendTicketUpdated(updatedTicket, assignees);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
+            log.warn("Failed to send email notification: " + e.getMessage(), e);
         }
 
         return updatedTicket;
@@ -105,7 +110,7 @@ public class TicketServices {
         try {
             emailService.sendAssigned(ticket, user);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
+            log.warn("Failed to send email notification: " + e.getMessage(), e);
         }
 
     }
@@ -124,7 +129,7 @@ public class TicketServices {
         try {
             emailService.sendUnassigned(ticket, user);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
+            log.warn("Failed to send email notification: " + e.getMessage(), e);
         }
     }
 
