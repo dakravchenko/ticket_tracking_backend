@@ -3,6 +3,7 @@ package net.hackyourfuture.tickettrackingsystem.projects.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +36,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectModel> createProject(@Valid @RequestBody ProjectCreateRequest projectRequest) {
         ProjectModel project = projectService.createProject(projectRequest);
-        return ResponseEntity.ok(project);
+        return ResponseEntity.status(HttpStatus.CREATED).body(project);
     }
 
     @GetMapping("/summary")

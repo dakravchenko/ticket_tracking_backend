@@ -1,8 +1,10 @@
 package net.hackyourfuture.tickettrackingsystem.tickets.controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,7 +37,7 @@ public class TicketControllers {
     @PostMapping
     public ResponseEntity<TicketModel> createTicket(@Valid @RequestBody TicketCreateRequest ticket) {
         TicketModel createdTicket = ticketService.createTicket(ticket);
-        return ResponseEntity.ok(createdTicket);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTicket);
     }
 
     @GetMapping
@@ -84,19 +86,21 @@ public class TicketControllers {
     }
 
     @PatchMapping("/{id}/assign/{userId}")
-    public ResponseEntity<String> assignTicket(
+    public ResponseEntity<Map<String, String>> assignTicket(
             @PathVariable UUID id,
             @PathVariable UUID userId) {
 
         ticketService.assignTicket(id, userId);
-        return ResponseEntity.ok("Ticket assigned successfully.");
+        return ResponseEntity.ok(
+                Map.of("message", "Ticket assigned successfully."));
     }
 
     @PatchMapping("/{id}/unassign/{userId}")
-    public ResponseEntity<String> unassignTicket(@PathVariable UUID id, @PathVariable UUID userId) {
+    public ResponseEntity<Map<String, String>> unassignTicket(@PathVariable UUID id, @PathVariable UUID userId) {
 
         ticketService.unassignTicket(id, userId);
-        return ResponseEntity.ok("Ticket unassigned successfully.");
+        return ResponseEntity.ok(
+                Map.of("message", "Ticket unassigned successfully."));
 
     }
 }
