@@ -19,4 +19,5 @@ public class FileModel {
     private String contentType;
     private long fileSize;
     private LocalDateTime createdAt;
+    private String status;
 }

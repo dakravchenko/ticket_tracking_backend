@@ -30,8 +30,6 @@ public class FileController {
                                 fileService.getFiles(ticketId));
         }
 
-
-
         @PostMapping("/upload")
         public ResponseEntity<FileUploadResponse> createUpload(
                         @PathVariable UUID ticketId,
@@ -58,5 +56,29 @@ public class FileController {
                 return ResponseEntity
                                 .noContent()
                                 .build();
+        }
+
+        @PostMapping("/{fileId}/complete")
+        public ResponseEntity<Void> completeUpload(
+                        @PathVariable UUID ticketId,
+                        @PathVariable UUID fileId) {
+
+                fileService.completeUpload(
+                                ticketId,
+                                fileId);
+
+                return ResponseEntity.ok().build();
+        }
+
+        @PostMapping("/{fileId}/fail")
+        public ResponseEntity<Void> failUpload(
+                        @PathVariable UUID ticketId,
+                        @PathVariable UUID fileId) {
+
+                fileService.failUpload(
+                                ticketId,
+                                fileId);
+
+                return ResponseEntity.ok().build();
         }
 }

@@ -16,107 +16,148 @@ import net.hackyourfuture.tickettrackingsystem.tickets.dao.TicketDao;
 @Service
 public class FileService {
 
-    private final FileDao fileDao;
-    private final TicketDao ticketDao;
-    private final B2StorageService storageService;
+        private final FileDao fileDao;
+        private final TicketDao ticketDao;
+        private final B2StorageService storageService;
 
-    public FileService(
-            FileDao fileDao,
-            TicketDao ticketDao,
-            B2StorageService storageService) {
+        public FileService(
+                        FileDao fileDao,
+                        TicketDao ticketDao,
+                        B2StorageService storageService) {
 
-        this.fileDao = fileDao;
-        this.ticketDao = ticketDao;
-        this.storageService = storageService;
-    }
-
-    public FileUploadResponse createUpload(
-            UUID ticketId,
-            FileUploadRequest request) {
-
-        checkTicketExists(ticketId);
-
-        String objectId = UUID.randomUUID().toString();
-
-        String storageKey = "tickets/"
-                + ticketId
-                + "/"
-                + objectId
-                + "-"
-                + request.fileName();
-
-        FileModel file = fileDao.create(
-                ticketId,
-                request.fileName(),
-                storageKey,
-                request.contentType(),
-                request.fileSize());
-
-        String uploadUrl = storageService.generateUploadUrl(
-                storageKey,
-                request.contentType());
-
-        return new FileUploadResponse(
-                file.getFileId(),
-                uploadUrl);
-    }
-
-    public List<FileResponse> getFiles(
-            UUID ticketId) {
-
-        checkTicketExists(ticketId);
-
-        List<FileModel> files = fileDao.findByTicketId(ticketId);
-
-        return files.stream()
-                .map(file -> new FileResponse(
-                        file.getFileId(),
-                        file.getTicketId(),
-                        file.getFileName(),
-                        file.getContentType(),
-                        file.getFileSize(),
-                        file.getCreatedAt(),
-                        storageService.generateDownloadUrl(
-                                file.getStorageKey())))
-                .toList();
-    }
-
-    public void delete(
-            UUID ticketId,
-            UUID fileId) {
-
-        FileModel file = getFileForTicket(ticketId, fileId);
-
-        storageService.delete(
-                file.getStorageKey());
-
-        fileDao.delete(fileId);
-    }
-
-    private FileModel getFileForTicket(
-            UUID ticketId,
-            UUID fileId) {
-
-        FileModel file = fileDao.findById(fileId);
-
-        if (file == null ||
-                !file.getTicketId().equals(ticketId)) {
-
-            throw new ResourceNotFoundException(
-                    "File not found");
+                this.fileDao = fileDao;
+                this.ticketDao = ticketDao;
+                this.storageService = storageService;
         }
 
-        return file;
-    }
+        public FileUploadResponse createUpload(
+                        UUID ticketId,
+                        FileUploadRequest request) {
 
-    private void checkTicketExists(
-            UUID ticketId) {
+                checkTicketExists(ticketId);
 
-        if (ticketDao.getTicketById(ticketId) == null) {
-            throw new ResourceNotFoundException(
-                    "Ticket with id "
-                            + ticketId
-                            + " not found");
+                String objectId = UUID.randomUUID().toString();
+
+                String storageKey = "tickets/"
+                                + ticketId
+                                + "/"
+                                + objectId
+                                + "-"
+                                + request.fileName();
+
+                FileModel file = fileDao.create(
+                                ticketId,
+                                request.fileName(),
+                                storageKey,
+                                request.contentType(),
+                                request.fileSize());
+
+                String uploadUrl = storageService.generateUploadUrl(
+                                storageKey,
+                                request.contentType());
+
+                return new FileUploadResponse(
+                                file.getFileId(),
+                                uploadUrl);
         }
-    }
+
+        public void completeUpload(
+                        UUID ticketId,
+                        UUID fileId) {
+
+                FileModel file = getFileForTicket(ticketId, fileId);
+
+                if (!"pending".equals(file.getStatus())) {
+                        throw new IllegalStateException(
+                                        "File upload is not pending");
+                }
+
+                storageService.getMetadata(
+                                file.getStorageKey());
+
+                int updated = fileDao.markCompleted(fileId);
+
+                if (updated == 0) {
+                        throw new IllegalStateException(
+                                        "File could not be marked as completed");
+                }
+        }
+
+        public void failUpload(
+                        UUID ticketId,
+                        UUID fileId) {
+
+                FileModel file = getFileForTicket(ticketId, fileId);
+
+                if (!"pending".equals(file.getStatus())) {
+                        return;
+                }
+
+                try {
+                        storageService.delete(
+                                        file.getStorageKey());
+                } catch (Exception ignored) {
+                        /*
+                         * The object may never have been uploaded.
+                         */
+                }
+
+                fileDao.markFailed(fileId);
+        }
+
+        public List<FileResponse> getFiles(
+                        UUID ticketId) {
+
+                checkTicketExists(ticketId);
+
+                return fileDao
+                                .findCompletedByTicketId(ticketId)
+                                .stream()
+                                .map(file -> new FileResponse(
+                                                file.getFileId(),
+                                                file.getTicketId(),
+                                                file.getFileName(),
+                                                file.getContentType(),
+                                                file.getFileSize(),
+                                                file.getCreatedAt(),
+                                                storageService.generateDownloadUrl(
+                                                                file.getStorageKey())))
+                                .toList();
+        }
+
+        public void delete(
+                        UUID ticketId,
+                        UUID fileId) {
+
+                FileModel file = getFileForTicket(ticketId, fileId);
+
+                storageService.delete(
+                                file.getStorageKey());
+
+                fileDao.delete(fileId);
+        }
+
+        private FileModel getFileForTicket(
+                        UUID ticketId,
+                        UUID fileId) {
+
+                FileModel file = fileDao.findById(fileId);
+
+                if (file == null ||
+                                !file.getTicketId().equals(ticketId)) {
+
+                        throw new ResourceNotFoundException(
+                                        "File not found");
+                }
+
+                return file;
+        }
+
+        private void checkTicketExists(UUID ticketId) {
+
+                if (ticketDao.getTicketById(ticketId) == null) {
+                        throw new ResourceNotFoundException(
+                                        "Ticket with id " + ticketId + " not found");
+                }
+        }
 }
