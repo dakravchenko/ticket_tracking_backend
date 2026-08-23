@@ -7,7 +7,7 @@ import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 
 public interface TicketAssignmentDao {
     @SqlQuery("""
@@ -17,8 +17,8 @@ public interface TicketAssignmentDao {
               ON ta.user_id = u.user_id
             WHERE ta.ticket_id = :ticketId
             """)
-    @RegisterBeanMapper(UserModel.class)
-    List<UserModel> getAssignees(UUID ticketId);
+    @RegisterBeanMapper(UserResponse.class)
+    List<UserResponse> getAssignees(UUID ticketId);
 
     @SqlUpdate("""
             INSERT INTO ticket_assignment(ticket_id, user_id)

@@ -8,47 +8,47 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 
-@RegisterBeanMapper(UserModel.class)
+@RegisterBeanMapper(UserResponse.class)
 public interface UserDao {
 
-    @SqlQuery("""
-                SELECT *
-                FROM users
-                WHERE user_id = :id
-            """)
-    UserModel findById(@Bind("id") UUID id);
+        @SqlQuery("""
+                            SELECT *
+                            FROM users
+                            WHERE user_id = :id
+                        """)
+        UserResponse findById(@Bind("id") UUID id);
 
-    @SqlQuery("""
-            SELECT *
-            FROM users
-                """)
-    List<UserModel> findAllUsers();
+        @SqlQuery("""
+                        SELECT *
+                        FROM users
+                            """)
+        List<UserResponse> findAllUsers();
 
-    @SqlQuery("""
-                INSERT INTO users (name, email)
-                VALUES (:name, :email)
-                RETURNING user_id, name, email
-            """)
-    UserModel createUser(
-            @Bind("name") String name,
-            @Bind("email") String email);
+        @SqlQuery("""
+                            INSERT INTO users (name, email)
+                            VALUES (:name, :email)
+                            RETURNING user_id, name, email
+                        """)
+        UserResponse createUser(
+                        @Bind("name") String name,
+                        @Bind("email") String email);
 
-    @SqlQuery("""
-                UPDATE users
-                SET name = :name, email = :email
-                WHERE user_id = :id
-                RETURNING user_id, name, email
-            """)
-    UserModel updateUser(
-            @Bind("id") UUID id,
-            @Bind("name") String name,
-            @Bind("email") String email);
+        @SqlQuery("""
+                            UPDATE users
+                            SET name = :name, email = :email
+                            WHERE user_id = :id
+                            RETURNING user_id, name, email
+                        """)
+        UserResponse updateUser(
+                        @Bind("id") UUID id,
+                        @Bind("name") String name,
+                        @Bind("email") String email);
 
-    @SqlUpdate("""
-                DELETE FROM users
-                WHERE user_id = :id
-            """)
-    boolean deleteUser(@Bind("id") UUID id);
+        @SqlUpdate("""
+                            DELETE FROM users
+                            WHERE user_id = :id
+                        """)
+        boolean deleteUser(@Bind("id") UUID id);
 }

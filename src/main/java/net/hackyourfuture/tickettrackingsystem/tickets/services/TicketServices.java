@@ -18,6 +18,7 @@ import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketSearchRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketUpdateRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
 
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class TicketServices {
         TicketModel updatedTicket = ticketDao.updateTicket(id, request.title(), request.description(),
                 request.projectId(), status.getStatus());
 
-        List<UserModel> assignees = getAssignees(id);
+        List<UserResponse> assignees = getAssignees(id);
 
         try {
             emailService.sendTicketUpdated(updatedTicket, assignees);
@@ -105,7 +106,7 @@ public class TicketServices {
 
         TicketModel ticket = ticketDao.getTicketById(ticketId);
 
-        UserModel user = userDao.findById(userId);
+        UserResponse user = userDao.findById(userId);
 
         try {
             emailService.sendAssigned(ticket, user);
@@ -124,7 +125,7 @@ public class TicketServices {
 
         TicketModel ticket = ticketDao.getTicketById(ticketId);
 
-        UserModel user = userDao.findById(userId);
+        UserResponse user = userDao.findById(userId);
 
         try {
             emailService.sendUnassigned(ticket, user);
@@ -133,7 +134,7 @@ public class TicketServices {
         }
     }
 
-    public List<UserModel> getAssignees(UUID ticketId) {
+    public List<UserResponse> getAssignees(UUID ticketId) {
         checkTicketExists(ticketId);
 
         return ticketAssignmentDao.getAssignees(ticketId);

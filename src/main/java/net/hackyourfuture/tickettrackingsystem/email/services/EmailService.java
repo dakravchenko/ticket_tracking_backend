@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import net.hackyourfuture.tickettrackingsystem.email.client.ResendClient;
 import net.hackyourfuture.tickettrackingsystem.email.dto.EmailRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 
 @Service
 public class EmailService {
@@ -25,10 +25,10 @@ public class EmailService {
 
         public void sendTicketUpdated(
                         TicketModel ticket,
-                        List<UserModel> assignees) {
+                        List<UserResponse> assignees) {
 
                 List<String> emails = assignees.stream()
-                                .map(UserModel::getEmail)
+                                .map(UserResponse::email)
                                 .toList();
 
                 if (emails.isEmpty()) {
@@ -49,22 +49,22 @@ public class EmailService {
 
         public void sendAssigned(
                         TicketModel ticket,
-                        UserModel user) {
+                        UserResponse user) {
 
                 resendClient.sendEmail(
                                 new EmailRequest(
-                                                user.getEmail(),
+                                                user.email(),
                                                 "Ticket Assigned",
                                                 templateService.assigned(ticket)));
         }
 
         public void sendUnassigned(
                         TicketModel ticket,
-                        UserModel user) {
+                        UserResponse user) {
 
                 resendClient.sendEmail(
                                 new EmailRequest(
-                                                user.getEmail(),
+                                                user.email(),
                                                 "Ticket Unassigned",
                                                 templateService.unassigned(ticket)));
         }

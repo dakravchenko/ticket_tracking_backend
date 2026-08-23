@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.hackyourfuture.tickettrackingsystem.enums.StatusEnum;
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 
 @Getter
 @Setter
@@ -29,6 +29,6 @@ public class TicketModel {
 
     private Date updatedAt;
 
-    private List<UserModel> assignees = new ArrayList<>();
+    private List<UserResponse> assignees = new ArrayList<>();
 
 }

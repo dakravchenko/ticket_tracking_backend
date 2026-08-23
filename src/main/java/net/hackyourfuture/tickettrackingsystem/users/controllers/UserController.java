@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import net.hackyourfuture.tickettrackingsystem.users.dto.requests.CreateUserRequest;
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 import net.hackyourfuture.tickettrackingsystem.users.services.UserService;
 
 @RestController
@@ -29,20 +29,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserModel>> getUsers() {
-        List<UserModel> users = userService.getUsers();
+    public ResponseEntity<List<UserResponse>> getUsers() {
+        List<UserResponse> users = userService.getUsers();
         return ResponseEntity.ok(users);
     }
 
     @PostMapping
-    public ResponseEntity<UserModel> createUser(@Valid @RequestBody CreateUserRequest user) {
-        UserModel createdUser = userService.createUser(user.name(), user.email());
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest user) {
+        UserResponse createdUser = userService.createUser(user.name(), user.email());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModel> getUserById(@PathVariable UUID id) {
-        UserModel user = userService.getUserById(id);
+    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
+        UserResponse user = userService.getUserById(id);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
@@ -51,8 +51,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserModel> updateUser(@PathVariable UUID id, @Valid @RequestBody CreateUserRequest user) {
-        UserModel updatedUser = userService.updateUser(id, user.name(), user.email());
+    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody CreateUserRequest user) {
+        UserResponse updatedUser = userService.updateUser(id, user.name(), user.email());
         if (updatedUser != null) {
             return ResponseEntity.ok(updatedUser);
         } else {

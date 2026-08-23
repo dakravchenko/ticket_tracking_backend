@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.Getter;
 import lombok.Setter;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 
 @Service
 @Getter
@@ -21,19 +21,19 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public List<UserModel> getUsers() {
+    public List<UserResponse> getUsers() {
         return userDao.findAllUsers();
     }
 
-    public UserModel getUserById(UUID id) {
+    public UserResponse getUserById(UUID id) {
         return userDao.findById(id);
     }
 
-    public UserModel createUser(String name, String email) {
+    public UserResponse createUser(String name, String email) {
         return userDao.createUser(name, email);
     }
 
-    public UserModel updateUser(UUID id, String name, String email) {
+    public UserResponse updateUser(UUID id, String name, String email) {
         return userDao.updateUser(id, name, email);
     }
 

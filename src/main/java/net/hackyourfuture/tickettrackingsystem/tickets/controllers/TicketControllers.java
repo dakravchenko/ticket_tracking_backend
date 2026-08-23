@@ -23,7 +23,7 @@ import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketSearchRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketUpdateRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 import net.hackyourfuture.tickettrackingsystem.tickets.services.TicketServices;
-import net.hackyourfuture.tickettrackingsystem.users.model.UserModel;
+import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
 
 @RestController
 @RequestMapping("/v1/api/tickets")
@@ -51,7 +51,7 @@ public class TicketControllers {
 
         for (TicketModel ticket : tickets) {
             if (ticket != null) {
-                List<UserModel> assignedUsers = ticketService.getAssignees(ticket.getTicketId());
+                List<UserResponse> assignedUsers = ticketService.getAssignees(ticket.getTicketId());
                 ticket.setAssignees(assignedUsers);
             }
         }
@@ -62,7 +62,7 @@ public class TicketControllers {
     @GetMapping("/{id}")
     public ResponseEntity<TicketModel> getTicketById(@PathVariable UUID id) {
         TicketModel ticket = ticketService.getTicketById(id);
-        List<UserModel> assignedUsers = ticketService.getAssignees(id);
+        List<UserResponse> assignedUsers = ticketService.getAssignees(id);
 
         if (ticket != null) {
             ticket.setAssignees(assignedUsers);
