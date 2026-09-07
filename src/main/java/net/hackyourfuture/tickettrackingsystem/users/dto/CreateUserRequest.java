@@ -1,4 +1,4 @@
-package net.hackyourfuture.tickettrackingsystem.users.dto.requests;
+package net.hackyourfuture.tickettrackingsystem.users.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

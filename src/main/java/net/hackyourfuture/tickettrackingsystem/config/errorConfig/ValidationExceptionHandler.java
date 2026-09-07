@@ -67,4 +67,19 @@ public class ValidationExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(Map.of("error", "Invalid request parameter"));
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
+        if ("Email already exists".equalsIgnoreCase(ex.getMessage())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("email", "A user with this email already exists"));
+        }
+        return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentials() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Invalid email or password"));
+    }
 }

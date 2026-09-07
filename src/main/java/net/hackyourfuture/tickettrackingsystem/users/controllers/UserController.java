@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import net.hackyourfuture.tickettrackingsystem.users.dto.requests.CreateUserRequest;
-import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
+import net.hackyourfuture.tickettrackingsystem.users.dto.CreateUserRequest;
+import net.hackyourfuture.tickettrackingsystem.users.dto.UserResponse;
 import net.hackyourfuture.tickettrackingsystem.users.services.UserService;
 
 @RestController

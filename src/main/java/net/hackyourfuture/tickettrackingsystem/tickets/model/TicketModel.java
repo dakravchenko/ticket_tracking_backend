@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.hackyourfuture.tickettrackingsystem.enums.StatusEnum;
-import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
+import net.hackyourfuture.tickettrackingsystem.users.dto.UserResponse;
 
 @Getter
 @Setter

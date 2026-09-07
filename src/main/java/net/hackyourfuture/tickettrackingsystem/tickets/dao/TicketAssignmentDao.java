@@ -7,7 +7,7 @@ import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
+import net.hackyourfuture.tickettrackingsystem.users.dto.UserResponse;
 
 public interface TicketAssignmentDao {
     @SqlQuery("""

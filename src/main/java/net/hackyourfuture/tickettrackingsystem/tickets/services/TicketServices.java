@@ -18,7 +18,7 @@ import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketSearchRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.dto.TicketUpdateRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
-import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
+import net.hackyourfuture.tickettrackingsystem.users.dto.UserResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;

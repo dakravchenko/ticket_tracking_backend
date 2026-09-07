@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import net.hackyourfuture.tickettrackingsystem.email.client.ResendClient;
 import net.hackyourfuture.tickettrackingsystem.email.dto.EmailRequest;
 import net.hackyourfuture.tickettrackingsystem.tickets.model.TicketModel;
-import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
+import net.hackyourfuture.tickettrackingsystem.users.dto.UserResponse;
 
 @Service
 public class EmailService {

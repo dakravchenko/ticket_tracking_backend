@@ -26,10 +26,17 @@ public class AppUserDetailsService implements UserDetailsService {
             throw new RuntimeException("Something went wrong");
         }
 
+        var roles = userDao.findRolesByUserId(user.getUserId());
+
+        var authorities = roles.stream()
+                .map(r -> "ROLE_" + r)
+                .map(org.springframework.security.core.authority.SimpleGrantedAuthority::new)
+                .toList();
+
         return User.builder()
                 .username(user.getEmail())
                 .password(user.getPasswordHash())
-                .roles(user.getRole().name())
+                .authorities(authorities)
                 .build();
     }
 }

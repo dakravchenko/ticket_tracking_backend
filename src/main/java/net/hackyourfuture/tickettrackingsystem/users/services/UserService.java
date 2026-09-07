@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.Getter;
 import lombok.Setter;
 import net.hackyourfuture.tickettrackingsystem.users.dao.UserDao;
-import net.hackyourfuture.tickettrackingsystem.users.dto.responces.UserResponse;
+import net.hackyourfuture.tickettrackingsystem.users.dto.UserResponse;
 
 @Service
 @Getter
