@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,24 +28,28 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<List<ProjectModel>> getProjects() {
         List<ProjectModel> projects = projectService.getProjects();
         return ResponseEntity.ok(projects);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProjectModel> createProject(@Valid @RequestBody ProjectCreateRequest projectRequest) {
         ProjectModel project = projectService.createProject(projectRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(project);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/summary")
     public ResponseEntity<List<ProjectSummaryResponse>> getProjectSummary() {
         List<ProjectSummaryResponse> summaries = projectService.getProjectSummary();
         return ResponseEntity.ok(summaries);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<ProjectModel> getProjectById(@PathVariable UUID id) {
         ProjectModel project = projectService.getProjectById(id);

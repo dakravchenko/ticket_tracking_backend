@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import net.hackyourfuture.tickettrackingsystem.files.dto.FileResponse;
@@ -30,6 +31,7 @@ public class FileController {
                                 fileService.getFiles(ticketId));
         }
 
+        @PreAuthorize("hasRole('USER')")
         @PostMapping("/upload")
         public ResponseEntity<FileUploadResponse> createUpload(
                         @PathVariable UUID ticketId,
@@ -44,6 +46,7 @@ public class FileController {
                                 .body(response);
         }
 
+        @PreAuthorize("hasRole('USER')")
         @DeleteMapping("/{fileId}")
         public ResponseEntity<Void> delete(
                         @PathVariable UUID ticketId,
@@ -58,6 +61,7 @@ public class FileController {
                                 .build();
         }
 
+        @PreAuthorize("hasRole('USER')")
         @PostMapping("/{fileId}/complete")
         public ResponseEntity<Void> completeUpload(
                         @PathVariable UUID ticketId,
@@ -70,6 +74,7 @@ public class FileController {
                 return ResponseEntity.ok().build();
         }
 
+        @PreAuthorize("hasRole('USER')")
         @PostMapping("/{fileId}/fail")
         public ResponseEntity<Void> failUpload(
                         @PathVariable UUID ticketId,
