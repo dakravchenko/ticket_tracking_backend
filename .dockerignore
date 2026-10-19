@@ -1,0 +1,6 @@
+
+.git
+target/
+ticket_tracking_backup.dump
+.idea/
+*.iml
