@@ -1,10 +1,9 @@
 # Ticket Tracking System Backend
 
-> 🚧 **Work in progress**
->
-> This project is currently under development. Deployment is planned for a later stage.
-
 A REST API backend for a ticket tracking system, built with Java and Spring Boot.
+
+**Live API Documentation:** [Swagger UI](https://ticket-tracking-system-q92t.onrender.com/swagger-ui/index.html)
+
 
 The application provides functionality for managing users, projects, tickets, ticket assignments, authentication, and file uploads.
 
